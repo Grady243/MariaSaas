@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { CreateClientInput } from '@shared/schemas/clientSchema'
+import { CreateClientInput, UpdateClientInput } from '@shared/schemas/clientSchema'
 import { ClientDTO } from '@shared/types'
 import { RootState } from '../store'
 
@@ -54,6 +54,43 @@ export const createNewClient = createAsyncThunk<ClientDTO, CreateClientInput>(
   }
 )
 
+export const updateExistingClient = createAsyncThunk<ClientDTO, UpdateClientInput>(
+  'clients/update',
+  async (data, { getState, rejectWithValue }) => {
+    try {
+      const state = getState() as RootState
+      const role = state.auth.user?.role
+      if (!role) return rejectWithValue('Non authentifié')
+
+      const res = await window.api.clients.update(data, role)
+      if (!res.success)
+        return rejectWithValue(res.error?.message || 'Erreur lors de la mise à jour')
+
+      return res.data as ClientDTO
+    } catch (err: unknown) {
+      return rejectWithValue((err as Error).message)
+    }
+  }
+)
+
+export const removeClient = createAsyncThunk<string, string>(
+  'clients/delete',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const state = getState() as RootState
+      const role = state.auth.user?.role
+      if (!role) return rejectWithValue('Non authentifié')
+
+      const res = await window.api.clients.delete(id, role)
+      if (!res.success) return rejectWithValue(res.error?.message || 'Erreur de suppression')
+
+      return id // On retourne l'ID pour le filtrer dans le reducer
+    } catch (err: unknown) {
+      return rejectWithValue((err as Error).message)
+    }
+  }
+)
+
 const clientSlice = createSlice({
   name: 'clients',
   initialState,
@@ -82,6 +119,17 @@ const clientSlice = createSlice({
       })
       .addCase(createNewClient.rejected, (state, action) => {
         state.error = action.payload as string
+      })
+      // UPDATE
+      .addCase(updateExistingClient.fulfilled, (state, action) => {
+        const index = state.list.findIndex((c) => c.id === action.payload.id)
+        if (index !== -1) {
+          state.list[index] = action.payload
+        }
+      })
+      // DELETE
+      .addCase(removeClient.fulfilled, (state, action) => {
+        state.list = state.list.filter((c) => c.id !== action.payload)
       })
   }
 })

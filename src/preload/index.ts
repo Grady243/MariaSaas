@@ -3,6 +3,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 import { LoginInput } from '../shared/schemas/authSchema'
 import { CreateUserInput, UpdateUserInput } from '@shared/schemas/userSchema'
 import { CreateClientInput, UpdateClientInput } from '../shared/schemas/clientSchema'
+import { CreateSupplierInput, UpdateSupplierInput } from '@shared/schemas/supplierSchema'
 
 // Api typée
 const api = {
@@ -21,11 +22,15 @@ const api = {
     getProducts: () => ipcRenderer.invoke('inventory:get-products'),
     createProduct: (data) => ipcRenderer.invoke('inventory:create-product', data),
     getSuppliers: () => ipcRenderer.invoke('inventory:get-suppliers'),
-    createSupplier: (data: { name: string; phone?: string }, role: string) =>
-      ipcRenderer.invoke('inventory:create-supplier', { data, role }),
     createDraft: (data) => ipcRenderer.invoke('inventory:create-draft', data),
     validateRequisition: (id) => ipcRenderer.invoke('inventory:validate', id),
-    getRequisitions: () => ipcRenderer.invoke('inventory:get-requisitions')
+    getRequisitions: () => ipcRenderer.invoke('inventory:get-requisitions'),
+    createSupplier: (data: CreateSupplierInput, role: string) =>
+      ipcRenderer.invoke('inventory:create-supplier', { data, role }),
+    updateSupplier: (data: UpdateSupplierInput, role: string) =>
+      ipcRenderer.invoke('inventory:update-supplier', { data, role }),
+    deleteSupplier: (id: string, role: string) =>
+      ipcRenderer.invoke('inventory:delete-supplier', { id, role })
   },
   clients: {
     list: (query?: string) => ipcRenderer.invoke('clients:list', query),

@@ -25,11 +25,18 @@ declare global {
       inventory: {
         getProducts: () => Promise<ApiResponse<ProductDTO[]>>
         createProduct: (data: ProductInput) => Promise<ApiResponse<ProductDTO>>
+
         createSupplier: (
-          data: { name: string; phone?: string },
+          data: CreateSupplierInput,
           role: string
         ) => Promise<ApiResponse<SupplierDTO>>
+        updateSupplier: (
+          data: UpdateSupplierInput,
+          role: string
+        ) => Promise<ApiResponse<SupplierDTO>>
+        deleteSupplier: (id: string, role: string) => Promise<ApiResponse<void>>
         getSuppliers: () => Promise<ApiResponse<SupplierDTO[]>>
+
         createDraft: (data: CreateRequisitionInput) => Promise<ApiResponse<RequisitionDTO>>
         validateRequisition: (id: string) => Promise<ApiResponse<RequisitionDTO>>
         getRequisitions: () => Promise<ApiResponse<RequisitionDTO[]>>
