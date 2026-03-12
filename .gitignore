@@ -39,6 +39,11 @@ build
 Thumbs.db
 
 # =========================
+# VSCode
+# =========================
+.vscode/settings.json
+
+# =========================
 # Prisma generated files
 # =========================
 /src/generated/prisma
@@ -53,6 +58,7 @@ Thumbs.db
 prisma/*.db
 prisma/*.db-journal
 prisma/*.db.backup
+/prisma/dev.db
 
 # =========================
 # Vite artifacts
@@ -62,10 +68,6 @@ prisma/*.db.backup
 /src/renderer/public/vite.svg.map.gz
 /src/renderer/public/vite.svg.map.br
 /src/renderer/public/vite.svg.map.br.gz
-/src/renderer/public/vite.svg.map.br.gz.br
-/src/renderer/public/vite.svg.map.br.gz.br.gz
-/src/renderer/public/vite.svg.map.br.gz.br.gz.br
-/src/renderer/public/vite.svg.map.br.gz.br.gz.br.gz
 
 # =========================
 # Electron builder
